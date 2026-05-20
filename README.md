@@ -47,3 +47,40 @@ smart-totem-security-system/
 ├── .gitignore           # Bloqueador de arquivos sensíveis
 ├── app.py               # Código principal da aplicação Flask
 └── requirements.txt     # Dependências do projeto
+
+````
+
+
+🛠️ Como Executar o Projeto
+Pré-requisitos
+Python 3.10 ou superior instalado.
+
+Passo a Passo
+Clone o repositório:
+
+```
+git clone [https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git)
+cd NOME_DO_REPOSITORIO
+```
+Instale as dependências:
+```
+pip install -r requirements.txt
+```
+Configure as Variáveis de Ambiente:
+Crie um arquivo chamado .env na raiz do projeto e adicione as seguintes chaves:
+```
+Code snippet
+SECRET_KEY=sua_chave_secreta_aqui
+ADMIN_USER=seu_usuario_admin
+ADMIN_PASS=sua_senha_segura
+```
+Prepare a pasta de logs:
+Certifique-se de que a pasta logs/ existe no diretório raiz. Se não, crie-a:
+```
+mkdir logs
+```
+Execute a aplicação:
+```
+python app.py
+```
+A aplicação estará disponível em http://127.0.0.1:5000/.
