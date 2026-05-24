@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Admin</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #020617;
+  color: white;
+  text-align: center;
+  padding-top: 100px;
+}
+
+.box {
+  background: rgba(255,255,255,0.05);
+  padding: 40px;
+  border-radius: 15px;
+  display: inline-block;
+  min-width: 320px;
+}
+
+.usuario {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+a {
+  display: block;
+  margin: 15px;
+  padding: 12px;
+  background: #f59e0b;
+  color: black;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+a:hover {
+  opacity: 0.85;
+}
+
+.logout {
+  background: #ef4444;
+  color: white;
+}
+
+.badge-session {
+  display: inline-block;
+  background: #22c55e;
+  color: white;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>⚙️ Painel Administrativo</h1>
+  <p class="usuario">👤 Logado como: <strong>{{ usuario }}</strong></p>
+  <div class="badge-session" id="timer-badge">⏱ Sessão ativa</div>
+
+  <a href="/ligar_led">💡 Ligar LED</a>
+  <a href="/logout" class="logout">🚪 Sair</a>
+</div>
+
+<script>
+// Exibe contagem regressiva da sessão (5 minutos = 300s)
+let segundos = 300;
+const badge = document.getElementById("timer-badge");
+
+const intervalo = setInterval(() => {
+  segundos--;
+  const min = Math.floor(segundos / 60);
+  const sec = String(segundos % 60).padStart(2, '0');
+  badge.innerText = `⏱ Sessão: ${min}:${sec}`;
+
+  if (segundos <= 0) {
+    clearInterval(intervalo);
+    window.location.href = "/login";
+  }
+}, 1000);
+
+// Resetar timer ao interagir (apenas visual — o servidor controla de verdade)
+['mousemove', 'keypress', 'click', 'scroll'].forEach(ev => {
+  document.addEventListener(ev, () => {
+    segundos = 300;
+  });
+});
+</script>
+
+</body>
+</html>

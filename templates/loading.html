@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Inicializando</title>
+
+<style>
+body {
+  margin: 0;
+  background: #020617;
+  color: #38bdf8;
+  font-family: monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-box {
+  text-align: center;
+}
+
+.progress {
+  width: 300px;
+  height: 10px;
+  background: #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px auto;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #38bdf8;
+  animation: load 4s forwards;
+}
+
+@keyframes load {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="loading-box">
+  <h1>🤖 Iniciando Sistema...</h1>
+  <p id="status">Carregando...</p>
+
+  <div class="progress">
+    <div class="progress-bar"></div>
+  </div>
+</div>
+
+<script>
+const mensagens = [
+  "Carregando sensores...",
+  "Inicializando sistema...",
+  "Verificando segurança...",
+  "Sistema pronto!"
+];
+
+let i = 0;
+const status = document.getElementById("status");
+
+const intervalo = setInterval(() => {
+  if (i < mensagens.length) {
+    status.innerText = mensagens[i];
+    i++;
+  } else {
+    clearInterval(intervalo);
+  }
+}, 800);
+
+setTimeout(() => {
+  window.location.href = "/home";
+}, 4000);
+</script>
+
+</body>
+</html>

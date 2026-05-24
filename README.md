@@ -1,86 +1,85 @@
-# 🛡️ Smart Totem Security System
+# 🔐 Smart Totem Security System — Sprint 4
 
-![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![Flask](https://img.shields.io/badge/flask-3.0.0-green.svg)
-![Cybersecurity](https://img.shields.io/badge/Sprint%203-Cybersecurity-red)
-
-Este projeto foi desenvolvido para o **Entregável 3** com foco em aplicar controles fundamentais de segurança em uma aplicação Web Flask rodando em um Raspberry Pi. O sistema simula um totem inteligente, separando a interface pública de visualização das funções administrativas críticas (como o acionamento de atuadores/LED).
+Sistema de totem inteligente com segurança aprimorada: HTTPS, proteção contra SQL Injection, rate limiting e hardening.
 
 ---
 
-## 🚀 Funcionalidades e Critérios de Segurança Implementados
+## ⚙️ Instalação
 
-### 1. Controle de Acesso 👥
-* **Tela Pública (`/`):** Acessível a qualquer usuário do totem para exibição de informações gerais.
-* **Área Administrativa (`/admin`):** Restrita e protegida por autenticação. Bloqueia acessos diretos e redireciona tentativas não autorizadas para a tela de login.
-
-### 2. Proteção de Credenciais e Configurações 🔐
-* **Variáveis de Ambiente:** Utilização da biblioteca `python-dotenv` para carregar dados sensíveis (como `SECRET_KEY`, `ADMIN_USER` e `ADMIN_PASS`) a partir de um arquivo `.env`.
-* **Segurança no Repositório:** O arquivo `.env` contendo as credenciais reais **foi adicionado ao `.gitignore`** para garantir que segredos nunca sejam expostos no histórico de versionamento (Git). No Raspberry Pi, esse arquivo é configurado localmente na pasta raiz da aplicação.
-
-### 3. Proteção da Aplicação Web e Logs 🛡️
-* **Validação de Entradas:** Tratamento básico no formulário de login para impedir submissões vazias.
-* **Debug Desativado:** O modo de depuração do Flask foi explicitamente desativado (`debug=False`) em ambiente de produção para evitar o vazamento de stack traces e informações internas do servidor.
-* **Mecanismo de Log (`/logs/app.log`):** Auditoria ativa usando a biblioteca nativa `logging`. O sistema registra:
-  * Tentativas de login bem-sucedidas.
-  * Tentativas de login inválidas (potenciais ataques de força bruta).
-  * Tentativas de acesso negado a rotas restritas.
-  * Execução de comandos administrativos (ex: acionamento do LED).
-
-### 4. Controle Temporal da Sessão (Timeout) ⏱️
-* Implementação de expiração automática da sessão baseada em inatividade. Se o administrador passar mais de 10 segundos sem interagir com a área restrita, a sessão é destruída (`session.clear()`) e o usuário é redirecionado para a tela inicial, simulando a perda de proximidade do usuário do totem.
-
----
-
-## 🔧 Estrutura do Projeto
-
-```text
-smart-totem-security-system/
-│
-├── logs/
-│   └── app.log          # Registro de auditoria e eventos de segurança
-├── templates/
-│   ├── index.html       # Tela pública do totem
-│   ├── login.html       # Tela de autenticação admin
-│   └── admin.html       # Painel administrativo protegido
-├── .env                 # Arquivo local de credenciais (NÃO ENVIAR AO GIT)
-├── .gitignore           # Bloqueador de arquivos sensíveis
-├── app.py               # Código principal da aplicação Flask
-└── requirements.txt     # Dependências do projeto
-
-````
-
-
-🛠️ Como Executar o Projeto
-Pré-requisitos
-Python 3.10 ou superior instalado.
-
-Passo a Passo
-Clone o repositório:
-
-```
-git clone [https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git)
-cd NOME_DO_REPOSITORIO
-```
-Instale as dependências:
-```
+```bash
 pip install -r requirements.txt
 ```
-Configure as Variáveis de Ambiente:
-Crie um arquivo chamado .env na raiz do projeto e adicione as seguintes chaves:
+
+---
+
+## 🔑 Configuração do .env
+
+Copie o exemplo e preencha com valores reais:
+
+```bash
+cp .env.example .env
 ```
-Code snippet
-SECRET_KEY=sua_chave_secreta_aqui
-ADMIN_USER=seu_usuario_admin
-ADMIN_PASS=sua_senha_segura
+
+Gere uma SECRET_KEY forte:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
 ```
-Prepare a pasta de logs:
-Certifique-se de que a pasta logs/ existe no diretório raiz. Se não, crie-a:
+
+---
+
+## 🔒 Gerar certificado SSL (auto-assinado)
+
+```bash
+chmod +x gerar_certificado.sh
+./gerar_certificado.sh
 ```
-mkdir logs
-```
-Execute a aplicação:
-```
+
+---
+
+## ▶️ Executar
+
+```bash
 python app.py
 ```
-A aplicação estará disponível em http://127.0.0.1:5000/.
+
+Acesse: **https://localhost:5000**
+
+> O navegador vai exibir aviso de certificado auto-assinado. Clique em "Avançado" → "Prosseguir para localhost".
+
+---
+
+## 🛡️ Segurança implementada
+
+| Recurso | Descrição |
+|---|---|
+| **HTTPS** | Certificado auto-assinado via OpenSSL |
+| **Rate Limit** | Máx. 5 tentativas de login por minuto por IP |
+| **SQL Injection** | Consultas parametrizadas com SQLite (`?`) |
+| **Validação de input** | Limite de 50 chars, bloqueio de caracteres SQL |
+| **Cabeçalhos HTTP** | X-Frame-Options, X-Content-Type-Options, HSTS |
+| **Sessão segura** | Timeout de 5 min, SECRET_KEY via .env |
+| **debug=False** | Modo produção sem exposição de erros internos |
+| **.gitignore** | .env, certs/ e .db fora do repositório |
+
+---
+
+## 📁 Estrutura
+
+```
+smart-totem-security-system/
+├── app.py
+├── requirements.txt
+├── .env.example
+├── .gitignore
+├── gerar_certificado.sh
+├── certs/          ← gerado localmente, não commitado
+├── logs/
+│   └── app.log
+├── totem.db        ← gerado ao iniciar, não commitado
+└── templates/
+    ├── loading.html
+    ├── index.html
+    ├── login.html
+    └── admin.html
+```

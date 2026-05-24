@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Login</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #020617;
+  color: white;
+  text-align: center;
+  padding-top: 100px;
+}
+
+form {
+  background: rgba(255,255,255,0.05);
+  padding: 30px;
+  border-radius: 15px;
+  display: inline-block;
+}
+
+input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  width: 220px;
+  border-radius: 5px;
+  border: none;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 10px 20px;
+  background: #22c55e;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background: #16a34a;
+}
+
+.erro {
+  background: #ef4444;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  animation: shake 0.3s;
+  max-width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.aviso {
+  background: #f59e0b;
+  color: black;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  max-width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.senha-box {
+  position: relative;
+  width: 220px;
+  margin: 10px auto;
+}
+
+.senha-box input {
+  width: 100%;
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+.olho {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.badge-https {
+  display: inline-block;
+  background: #22c55e;
+  color: white;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🔐 Login Administrativo</h1>
+<div class="badge-https">🔒 Conexão segura HTTPS</div>
+
+{% if erro %}
+  <p class="erro">{{ erro }}</p>
+{% endif %}
+
+<form method="POST" autocomplete="off">
+  <input name="username" placeholder="Usuário" maxlength="50" required>
+
+  <div class="senha-box">
+    <input id="senha" name="password" type="password" placeholder="Senha" maxlength="50" required>
+    <span onclick="toggleSenha()" class="olho">👁️</span>
+  </div>
+
+  <button type="submit">Entrar</button>
+</form>
+
+<script>
+function toggleSenha() {
+  const input = document.getElementById("senha");
+  const olho = document.querySelector(".olho");
+
+  if (input.type === "password") {
+    input.type = "text";
+    olho.innerText = "🚫";
+  } else {
+    input.type = "password";
+    olho.innerText = "👁️";
+  }
+}
+</script>
+
+</body>
+</html>
